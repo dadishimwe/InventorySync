@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Management App</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+</head>
+<body>
+  <div id="login" class="section">
+    <h1>Login</h1>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+    <button onclick="showRegister()">Register</button>
+    <button onclick="showPasswordReset()">Reset Password</button>
+    <div id="login-error" class="error"></div>
+  </div>
+
+  <div id="register" class="section" style="display: none;">
+    <h1>Register</h1>
+    <input type="text" id="reg-username" placeholder="Username" required>
+    <input type="text" id="reg-name" placeholder="Full Name" required>
+    <input type="password" id="reg-password" placeholder="Password" required>
+    <select id="role" required>
+      <option value="staff">Staff</option>
+      <option value="admin">Admin</option>
+      <option value="client">Client</option>
+    </select>
+    <select id="permissions" style="display: none;">
+      <option value="read">Read-Only</option>
+      <option value="read_write">Read/Write</option>
+    </select>
+    <button onclick="register()">Register</button>
+    <button onclick="showLogin()">Back to Login</button>
+  </div>
+
+  <div id="password-reset" class="section" style="display: none;">
+    <h1>Reset Password</h1>
+    <input type="text" id="reset-username" placeholder="Username" required>
+    <input type="password" id="reset-new-password" placeholder="New Password" required>
+    <button onclick="resetPassword()">Reset</button>
+    <button onclick="showLogin()">Back to Login</button>
+  </div>
+
+  <div id="dashboard" class="section" style="display: none;">
+    <h1>Inventory Dashboard</h1>
+    <p>Welcome, <span id="user-name"></span> (<span id="user-role"></span>)</p>
+    <button onclick="logout()">Logout</button>
+    <button onclick="showChangePassword()">Change Password</button>
+    <button onclick="syncData()" id="sync-btn">Sync Data</button>
+
+    <div id="staff-section" style="display: none;">
+      <h2>Add Inventory Item</h2>
+      <div id="inventory-form">
+        <input type="text" id="item-name" placeholder="Item Name" required>
+        <input type="text" id="serial-number" placeholder="Serial Number" required>
+        <input type="text" id="location" placeholder="Location" required>
+        <select id="status" required>
+          <option value="in stock">In Stock</option>
+          <option value="out of stock">Out of Stock</option>
+          <option value="damaged">Damaged</option>
+        </select>
+        <input type="number" id="quantity" placeholder="Quantity" min="0" required>
+        <select id="assigned-to">
+          <option value="">Not Assigned</option>
+        </select>
+        <button onclick="submitInventoryItem()">Submit</button>
+      </div>
+      <div id="inventory-error" class="error"></div>
+    </div>
+
+    <div id="admin-section" style="display: none;">
+      <h2>Admin Controls</h2>
+      <input type="text" id="new-user-username" placeholder="New User Username">
+      <input type="text" id="new-user-name" placeholder="New User Name">
+      <input type="password" id="new-user-password" placeholder="New User Password">
+      <select id="new-user-role" onchange="togglePermissions()">
+        <option value="staff">Staff</option>
+        <option value="admin">Admin</option>
+        <option value="client">Client</option>
+      </select>
+      <select id="new-user-permissions" style="display: none;">
+        <option value="read">Read-Only</option>
+        <option value="read_write">Read/Write</option>
+      </select>
+      <button onclick="createUser()">Create User</button>
+      <button id="toggle-users-btn" onclick="toggleUsersList()">Show Users List</button>
+      <button onclick="generateReport()">Generate Inventory Report</button>
+      <div id="users-list" style="display: none;">
+        <h3>Users List</h3>
+        <table id="users-table">
+          <thead><tr><th>ID</th><th>Username</th><th>Name</th><th>Role</th><th>Permissions</th><th>Action</th></tr></thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="client-section" style="display: none;">
+      <h2>Assigned Inventory</h2>
+      <table id="assigned-inventory-table">
+        <thead><tr><th>Name</th><th>Serial Number</th><th>Location</th><th>Status</th><th>Quantity</th><th>Actions</th></tr></thead>
+        <tbody id="assigned-inventory-body"></tbody>
+      </table>
+    </div>
+
+    <h2>Inventory</h2>
+    <select id="status-filter" onchange="loadInventory()">
+      <option value="">All Statuses</option>
+      <option value="in stock">In Stock</option>
+      <option value="out of stock">Out of Stock</option>
+      <option value="damaged">Damaged</option>
+    </select>
+    <table id="inventory-table">
+      <thead><tr><th>Name</th><th>Serial Number</th><th>Location</th><th>Status</th><th>Quantity</th><th>Assigned To</th><th>Actions</th></tr></thead>
+      <tbody id="inventory-body"></tbody>
+    </table>
+  </div>
+
+  <div id="change-password" class="section" style="display: none;">
+    <h1>Change Password</h1>
+    <input type="password" id="new-password" placeholder="New Password" required>
+    <button onclick="changePassword()">Change</button>
+    <button onclick="showDashboard()">Back</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
